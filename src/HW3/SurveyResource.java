@@ -46,16 +46,6 @@ public class SurveyResource {
 	EntityManager em; 
 	@Resource UserTransaction utx;
 	
-	/*public SurveyResource() {
-		emf = Persistence.createEntityManagerFactory("SWE645HW3Fixed");
-    	em = emf.createEntityManager();
-		
-	}
-	@GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String sayPlainTextHello() {
-        return "Hello Jersey";
-    }*/
 
 	
 // This method is called if XML is request
@@ -63,22 +53,14 @@ public class SurveyResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll() {
     	
-    	/*em = emf.createEntityManager(); 
-    	try {
-    		utx.begin(); 
-    		//em.persist(SomeEntity); 
-    		//em.merge(AnotherEntity); 
-    		em.remove(ThirdEntity); 
-    		utx.commit();
-    		} 
-    	catch (Exception e) { 
-    		utx.rollback();
-    	}*/
+    	
     	emf = Persistence.createEntityManagerFactory("SWE645HW3Fixed");
     	em = emf.createEntityManager();
     	Query q = em.createQuery("SELECT p FROM Post p");
     	List<Post> postList = q.getResultList();
     	Set posts = new HashSet();
+    	
+    	//converting the Post objects to JSON using a hashset.
     	for(int i=0; i<postList.size(); i++) {
     		
     		posts.add((convertToJSON(postList.get(i))));
@@ -86,12 +68,7 @@ public class SurveyResource {
     	
     	JSONObject multiple = new JSONObject();
     	multiple.put("posts",posts);
-    	/*Response res = Response
-    		      .status(Response.Status.OK)
-    		      .entity(multiple)
-    		      .type(MediaType.APPLICATION_JSON)
-    		      .build();*/
-    	
+
     	System.out.println(multiple.toString());
     	//return posts.toString();
     	
@@ -105,25 +82,12 @@ public class SurveyResource {
     @Path("{id}")
     public Response findByPk(@PathParam("id")int id) {
         
-    	/*em = emf.createEntityManager(); 
-    	try {
-    		utx.begin(); 
-    		//em.persist(SomeEntity); 
-    		//em.merge(AnotherEntity); 
-    		em.remove(ThirdEntity); 
-    		utx.commit();
-    		} 
-    	catch (Exception e) { 
-    		utx.rollback();
-    	}*/
+
     	emf = Persistence.createEntityManagerFactory("SWE645HW3Fixed");
     	em = emf.createEntityManager();
     	Post p = em.find(Post.class, id);
     	
-    	//convertToJSON(p);
-    	
-    	//JSONObject multiple = new JSONObject();
-    	//multiple.put("posts",p);
+
     	return Response
     		      .status(Response.Status.OK)
     		      .entity(convertToJSON(p))
@@ -137,11 +101,11 @@ public class SurveyResource {
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    //@Consumes("application/json")
-    //@Produces(MediaType.APPLICATION_JSON)
     public Response create(String p) {
     	System.out.println("#########################");
     	System.out.println(p);
+    	
+    	//convert the JSON string to a Post object
     	Post value = null;
     	ObjectMapper mapper = new ObjectMapper();
     	try {
@@ -157,9 +121,14 @@ public class SurveyResource {
     	emf = Persistence.createEntityManagerFactory("SWE645HW3Fixed");
     	em = emf.createEntityManager();
     	em.getTransaction().begin();
+    	
+    	//Add the newly created Post to DB
     	em.persist(value);
     	em.getTransaction().commit();
     	//System.out.println(value.getId());
+    	
+    	
+    	//return a JSON response back telling the user that the new post has been created
     	JSONObject object = new JSONObject();
     	object.put("message", "Post Added");
     	object.put("postId", value.getId());
@@ -176,17 +145,7 @@ public class SurveyResource {
     public Response edit(@PathParam("id") int id , String p) {
         System.out.println(p);
         System.out.println("##################>>>>>>>>>>>>>>+++++++++++++++");
-    	/*em = emf.createEntityManager(); 
-    	try {
-    		utx.begin(); 
-    		//em.persist(SomeEntity); 
-    		//em.merge(AnotherEntity); 
-    		em.remove(ThirdEntity); 
-    		utx.commit();
-    		} 
-    	catch (Exception e) { 
-    		utx.rollback();
-    	}*/
+    	
     	Post value = null;
     	ObjectMapper mapper = new ObjectMapper();
     	try {
@@ -201,12 +160,15 @@ public class SurveyResource {
     	emf = Persistence.createEntityManagerFactory("SWE645HW3Fixed");
     	em = emf.createEntityManager();
     	em.getTransaction().begin();
+    	
+    	//find the post object from DB and apply the changes.
     	Post pt = em.find(Post.class, id);
     	value.setId(id);
     	pt = value;
     	em.merge(pt);
     	em.getTransaction().commit();
     	
+    	// send a JSON respond back telling the user that the update was successful
     	JSONObject object = new JSONObject();
     	object.put("message", "Updated Successfully!!!");
    	 	Response response = Response.status(Status.OK).entity(object.toJSONString())
@@ -216,14 +178,7 @@ public class SurveyResource {
    	 	.build();
     	
     	return response;
-    	/*JSONObject multiple = new JSONObject();
-    	multiple.put("posts",multiple);
-    	return Response
-    		      .status(Response.Status.OK)
-    		      .entity(multiple)
-    		      .type(MediaType.APPLICATION_JSON)
-    		      .build();
-    	*/
+    	
     }
     
     @DELETE
@@ -233,12 +188,15 @@ public class SurveyResource {
     	
     	emf = Persistence.createEntityManagerFactory("SWE645HW3Fixed");
     	em = emf.createEntityManager();
+    	
+    	//Find the post object
     	Post p = em.find(Post.class, id);
     	System.out.println(p.toString());
     	em.getTransaction().begin();
-    	em.remove(p);
+    	em.remove(p);	//remove from DB
     	em.getTransaction().commit();
     	
+    	//Return a JSON Response telling the user that delete was successful
     	JSONObject object = new JSONObject();
     	object.put("message", "Post Deleted");
    	 	Response response = Response.status(Status.OK).entity(object)
@@ -248,14 +206,8 @@ public class SurveyResource {
     	return response;
     }
 
-// This method is called if HTML is request
-   /* @GET
-    @Produces(MediaType.TEXT_HTML)
-    public String sayHtmlHello() {
-        return "<html> " + "<title>" + "Hello Jersey" + "</title>"
-                + "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
-    }*/
     
+    //Method to convert a Post object to JSON
     public String convertToJSON(Post pt) {
     	
     	ObjectMapper mapper = new ObjectMapper();
