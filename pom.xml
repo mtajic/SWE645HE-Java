@@ -7,11 +7,11 @@
   <name>SWE645HW3Fixed</name>
   <description>SWE645HW3Fixed</description>
   <dependencies>
-		<dependency>
+<!-- 		<dependency>
 		    <groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
 		    <version>5.1.48</version>
-		</dependency>
+		</dependency> -->
 	  	<dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
