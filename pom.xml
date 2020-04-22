@@ -4,8 +4,8 @@
   <artifactId>SWE645HW3Fixed</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
-  <name>SWE645HW3back</name>
-  <description>SWE645HW3back</description>
+  <name>SWE645HW3Fixed</name>
+  <description>SWE645HW3Fixed</description>
   <dependencies>
 <!-- 		<dependency>
 		    <groupId>mysql</groupId>
@@ -117,12 +117,6 @@
 	  <resources>
 	     <resource>
 	       <directory>src</directory>
-	     </resource>
-	     <resource>
-	       <directory>src/META-INF</directory>
-	     </resource>
-	     <resource>
-	       <directory>WebContent</directory>
 	     </resource>
  	  </resources>
   </build>
