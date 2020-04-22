@@ -114,5 +114,16 @@
       </plugin>
     </plugins>
 <finalName>survey</finalName>
+	  <resources>
+	     <resource>
+	       <directory>src</directory>
+	     </resource>
+	     <resource>
+	       <directory>src/META-INF</directory>
+	     </resource>
+	     <resource>
+	       <directory>WebContent</directory>
+	     </resource>
+ 	  </resources>
   </build>
 </project>
